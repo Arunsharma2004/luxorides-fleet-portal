@@ -19,6 +19,13 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(404, ex.getMessage());
     }
 
+    // The vehicle is already booked for the requested time (2-hour turnaround rule)
+    @ExceptionHandler(BookingConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflict(BookingConflictException ex) {
+        return new ErrorResponse(409, ex.getMessage());
+    }
+
     // A field failed validation, e.g. durationHours = 0
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
