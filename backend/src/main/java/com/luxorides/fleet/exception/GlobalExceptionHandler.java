@@ -19,11 +19,25 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(404, ex.getMessage());
     }
 
-    // The vehicle is already booked for the requested time (2-hour turnaround rule)
+    // The vehicle (or chauffeur) is already taken for the requested time
     @ExceptionHandler(BookingConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleConflict(BookingConflictException ex) {
         return new ErrorResponse(409, ex.getMessage());
+    }
+
+    // No token, wrong token, or wrong email/password
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleUnauthorized(UnauthorizedException ex) {
+        return new ErrorResponse(401, ex.getMessage());
+    }
+
+    // Valid token, but the user's role is not allowed
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbidden(ForbiddenException ex) {
+        return new ErrorResponse(403, ex.getMessage());
     }
 
     // A field failed validation, e.g. durationHours = 0
@@ -36,10 +50,10 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, message);
     }
 
-    // Body is not valid JSON, or has an unknown add-on name / wrong field type
+    // Body is not valid JSON, or has an unknown add-on/status name or wrong field type
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUnreadableBody(HttpMessageNotReadableException ex) {
-        return new ErrorResponse(400, "Invalid request body. Check field types and add-on names.");
+        return new ErrorResponse(400, "Invalid request body. Check field types and enum values.");
     }
 }

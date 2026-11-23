@@ -14,4 +14,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Active bookings of one vehicle that end after the given time, earliest first
     List<Booking> findByVehicleIdAndStatusInAndEndTimeAfterOrderByPickupTimeAsc(
             Long vehicleId, Collection<BookingStatus> statuses, LocalDateTime endAfter);
+
+    // Trips already assigned to one chauffeur
+    List<Booking> findByChauffeurIdAndStatusIn(Long chauffeurId, Collection<BookingStatus> statuses);
 }
