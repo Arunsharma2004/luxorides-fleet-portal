@@ -2,8 +2,10 @@ package com.luxorides.fleet.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.luxorides.fleet.dto.BookingResponse;
 import com.luxorides.fleet.entity.Booking;
 import com.luxorides.fleet.entity.BookingStatus;
 import com.luxorides.fleet.entity.Chauffeur;
@@ -23,9 +25,24 @@ public class ChauffeurService {
         this.bookingRepository = bookingRepository;
     }
 
+    public List<Chauffeur> getAllChauffeurs() {
+        return chauffeurRepository.findAll(Sort.by("id"));
+    }
+
     public Chauffeur getChauffeur(Long id) {
         return chauffeurRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Chauffeur not found with id " + id));
+    }
+
+    // Trips assigned to this chauffeur (cancelled trips are left out), earliest first
+    public List<BookingResponse> getAssignedTrips(Long chauffeurId) {
+        getChauffeur(chauffeurId); // throws 404 if the chauffeur does not exist
+
+        return bookingRepository.findByChauffeurIdOrderByPickupTimeAsc(chauffeurId)
+                .stream()
+                .filter(booking -> booking.getStatus() != BookingStatus.CANCELLED)
+                .map(BookingResponse::from)
+                .toList();
     }
 
     // Chauffeurs the admin can pick for this booking

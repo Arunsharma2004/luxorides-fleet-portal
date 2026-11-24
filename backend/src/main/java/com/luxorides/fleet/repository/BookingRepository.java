@@ -17,4 +17,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     // Trips already assigned to one chauffeur
     List<Booking> findByChauffeurIdAndStatusIn(Long chauffeurId, Collection<BookingStatus> statuses);
+
+    // All trips assigned to one chauffeur, earliest pickup first
+    List<Booking> findByChauffeurIdOrderByPickupTimeAsc(Long chauffeurId);
 }
