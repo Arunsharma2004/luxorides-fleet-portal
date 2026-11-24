@@ -125,3 +125,7 @@ export function updateBookingStatus(
     token,
   });
 }
+// Turns any error into text that is safe to show to the user
+export function getErrorMessage(error: unknown): string {
+  return error instanceof ApiError ? error.message : "Something went wrong. Please try again.";
+}
