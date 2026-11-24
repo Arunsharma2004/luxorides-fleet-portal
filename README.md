@@ -158,3 +158,27 @@ docker-compose.yml  PostgreSQL
 
 - **Backend fails with a Hibernate or connection error:** the database is not running. Start Docker Desktop and run `docker compose up -d`.
 - **Port 5432 already in use:** stop your local PostgreSQL, or change the port mapping in `docker-compose.yml` and the URL in `backend/src/main/resources/application.properties`.
+
+## Mobile app (optional bonus): chauffeur app
+
+A small React Native (Expo) app where a chauffeur sees their assigned trips and starts or completes them.
+
+**Run it**
+
+1. Start the backend and database as described above.
+2. Connect your laptop and phone to the **same Wi-Fi**. Install **Expo Go** on the phone.
+3. Find the laptop's Wi-Fi IPv4 address (`ipconfig` on Windows).
+4. Open `mobile/src/config.ts` and set `API_URL` to `http://<your-laptop-ip>:8080`.
+5. Run:
+
+   ```bash
+   cd mobile
+   npm install
+   npx expo start
+   ```
+
+6. Scan the QR code with Expo Go.
+
+**Using it:** choose a chauffeur at the top, and their assigned trips are listed. Tap **Start trip** or **Complete trip** to move the status forward, and pull down to refresh. The change also shows on the `/admin` dashboard.
+
+**Note:** for this demo the app signs in as the seeded admin account, and the chauffeur is picked from a list. There is no separate chauffeur login, because the brief does not require one.
