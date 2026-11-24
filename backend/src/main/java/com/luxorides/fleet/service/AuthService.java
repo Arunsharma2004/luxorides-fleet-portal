@@ -24,9 +24,12 @@ public class AuthService {
                 .filter(found -> found.getPassword().equals(request.password()))
                 .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
 
-        // A new random token on every login; it replaces the previous one
-        user.setToken(UUID.randomUUID().toString());
-        userRepository.save(user);
+        // One token per account, created on the first login and reused afterwards,
+        // so the website, the mobile app and API calls can be logged in at the same time
+        if (user.getToken() == null) {
+            user.setToken(UUID.randomUUID().toString());
+            userRepository.save(user);
+        }
 
         return new LoginResponse(user.getToken(), user.getRole(), user.getName());
     }
